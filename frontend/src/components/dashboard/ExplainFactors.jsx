@@ -24,7 +24,7 @@ export default function ExplainFactors({ explanation }) {
       <h3 id="explain-title" className="text-lg font-black tracking-tight text-slate-900 dark:text-white">Why the model scored you this way</h3>
       <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{explanation.summary}</p>
       <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-        From the saved model coefficients, using {explanation.subject} as the weakest current score.
+        From the saved model coefficients on your overall profile (previous score is the average of your subjects).
       </p>
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <FactorList title="Predicted score" items={explanation.scoreFactors} riskLevel={explanation.riskLevel} />

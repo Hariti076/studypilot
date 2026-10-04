@@ -34,6 +34,12 @@ Compact + Parental_Education_Level     0.704   0.956                   -13.560
       Compact + Distance_from_Home     0.735   0.952                    -9.659
 ```
 
+## Tuning and overfitting
+
+`src/train.py` writes these tables on a stratified 80/20 split with `random_state=42`. They are not the shipped test metrics above. See [tuning_impact.csv](tuning_impact.csv) and [overfitting_check.csv](overfitting_check.csv).
+
+On that run, linear regression CV RMSE was 0.9069920211963863, train RMSE 0.9111437988118133, and test RMSE 1.8964222626954774. Random forest test RMSE was 2.06641562855506 against a train RMSE of 0.5615512142088163 (overfit gap 1.504864414346244). Logistic regression train macro-F1 was 0.8801932797890927 and test macro-F1 was 0.8669368492565367 (gap 0.013256430532555985). Random forest classification train macro-F1 was 0.9885753293697602 and test macro-F1 was 0.8152712689424749 (gap 0.1733040604272853).
+
 ## Known limitations
 - Synthetic, almost linear data: simple linear models match or beat tree models.
 - A few extreme scores (11 flagged in the test set) cannot be explained by

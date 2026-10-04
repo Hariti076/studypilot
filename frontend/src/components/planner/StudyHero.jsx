@@ -63,7 +63,7 @@ export default function StudyHero({ prediction, plan, stats, onRecalculate, reca
           hint={plan ? `${progress}% of sessions` : 'Generate the plan to track'}
           bar={progress}
         />
-        <Stat label="Predicted average" value={`${prediction.summary.avgPredicted}%`} hint={`Current average ${prediction.summary.avgCurrent}%`} tone="text-indigo-200" />
+        <Stat label="Projected with plan" value={`${prediction.summary.avgPredicted}%`} hint={`Current average ${prediction.summary.avgCurrent}%`} tone="text-indigo-200" />
       </div>
     </section>
   );
