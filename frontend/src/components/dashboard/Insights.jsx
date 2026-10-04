@@ -1,5 +1,5 @@
-import { AlertTriangle, CalendarDays, CheckCircle2, Info, Lightbulb, Target } from 'lucide-react';
-import { RISK_STYLES, SUBJECT_COLORS, countdownLabel } from '../../utils/helpers';
+import { AlertTriangle, CheckCircle2, Info, Lightbulb, Sparkles } from 'lucide-react';
+import { getAdaptiveMessages } from '../../utils/helpers';
 
 const TYPES = {
   danger: { icon: AlertTriangle, cls: 'border-red-100 bg-red-50 text-red-800 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200', iconCls: 'text-red-500' },
@@ -8,56 +8,89 @@ const TYPES = {
   info: { icon: Lightbulb, cls: 'border-indigo-100 bg-indigo-50 text-indigo-800 dark:border-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-200', iconCls: 'text-indigo-500' },
 };
 
-export default function Insights({ messages, subjects }) {
+function factorSentence(factor, riskLevel) {
+  if (factor.direction === 'down') return `${factor.label} worked against this week.`;
+  if (factor.direction === 'up') return `${factor.label} worked in your favour.`;
+  return `${factor.label} pointed the risk toward ${riskLevel}.`;
+}
+
+function stepsFor(prediction) {
+  const persona = prediction.persona;
+  const ml = prediction.ml || {};
+  const risk = ml.risk_level || prediction.risk;
+  const levers = (ml.levers || []).map((lever) => lever.label).filter(Boolean);
+  const steps = [
+    'Read your subjects, attendance, sleep, study hours, and habits as one student.',
+    `Marked this week as ${risk} risk.`,
+  ];
+  if (persona?.name) {
+    steps.push(`Matched the study style “${persona.name}”. ${persona.description || persona.tip || ''}`.trim());
+  }
+  if (levers.length) {
+    steps.push(`Shaped the week around ${levers.slice(0, 4).join(', ')}.`);
+  }
+  return steps;
+}
+
+export default function Insights({ prediction, stats, streak }) {
+  const explanation = prediction.explanation || {};
+  const factors = [...(explanation.scoreFactors || []), ...(explanation.riskFactors || [])];
+  const seen = new Set();
+  const habits = factors.filter((factor) => {
+    if (seen.has(factor.label)) return false;
+    seen.add(factor.label);
+    return true;
+  });
+  const messages = getAdaptiveMessages(prediction, stats, streak);
+
   return (
-    <section className="grid gap-5 lg:grid-cols-3" aria-labelledby="insights-title">
-      <div className="card lg:col-span-2">
-        <h2 id="insights-title" className="text-base font-semibold text-slate-900 dark:text-white">
-          Insights
-        </h2>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Personalised feedback — updates as you complete sessions.</p>
-        <ul className="space-y-2.5">
-          {messages.map((m, i) => {
-            const t = TYPES[m.type] || TYPES.info;
-            const Icon = t.icon;
-            return (
-              <li key={`${m.type}-${i}`} className={`flex items-start gap-3 rounded-xl border px-4 py-3 text-sm ${t.cls}`}>
-                <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${t.iconCls}`} />
-                <span>{m.text}</span>
-              </li>
-            );
-          })}
-        </ul>
+    <section className="card" aria-labelledby="insights-title">
+      <div className="flex items-start gap-3">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">
+          <Sparkles className="h-5 w-5" />
+        </span>
+        <div>
+          <h2 id="insights-title" className="text-base font-semibold text-slate-900 dark:text-white">What the AI did</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">How your week was read and planned. This is the reasoning, not a score report.</p>
+        </div>
       </div>
 
-      <div className="card">
-        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Subjects</h2>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Projected with plan, and the exam countdown.</p>
-        <ul className="space-y-3">
-          {subjects.map((s) => {
-            const r = RISK_STYLES[s.risk];
+      <ol className="mt-5 space-y-3">
+        {stepsFor(prediction).map((step, index) => (
+          <li key={step} className="flex gap-3 text-sm text-slate-700 dark:text-slate-200">
+            <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{index + 1}</span>
+            <span className="pt-0.5">{step}</span>
+          </li>
+        ))}
+      </ol>
+
+      {habits.length > 0 && (
+        <div className="mt-5">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Habits it weighed</h3>
+          <ul className="mt-2 space-y-2">
+            {habits.map((factor) => (
+              <li key={factor.label} className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200">
+                {factorSentence(factor, explanation.riskLevel || prediction.risk)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {messages.length > 0 && (
+        <ul className="mt-5 space-y-2.5">
+          {messages.map((message, index) => {
+            const tone = TYPES[message.type] || TYPES.info;
+            const Icon = tone.icon;
             return (
-              <li key={s.name} className="flex items-center gap-3">
-                <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${SUBJECT_COLORS[s.colorIdx % SUBJECT_COLORS.length].dot}`} />
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1.5 truncate text-sm font-medium text-slate-800 dark:text-slate-100">
-                    {s.name}
-                    {s.priority === 'High' && <Target className="h-3.5 w-3.5 shrink-0 text-red-500" aria-label="High priority" />}
-                  </p>
-                  <p className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                    <CalendarDays className="h-3 w-3" /> {countdownLabel(s.daysLeft)}
-                    {s.scoreRange ? ` · ${s.scoreRange[0]}–${s.scoreRange[1]}` : ''}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-slate-900 dark:text-white">{s.predicted}%</p>
-                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${r.badge}`}>{s.risk}</span>
-                </div>
+              <li key={`${message.type}-${index}`} className={`flex items-start gap-3 rounded-xl border px-4 py-3 text-sm ${tone.cls}`}>
+                <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${tone.iconCls}`} />
+                <span>{message.text}</span>
               </li>
             );
           })}
         </ul>
-      </div>
+      )}
     </section>
   );
 }

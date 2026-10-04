@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
 import Insights from '../components/dashboard/Insights';
@@ -13,13 +12,11 @@ import { DashboardSkeleton } from '../components/ui/Skeleton';
 import { useAuth } from '../hooks/useAuth';
 import { useGeneratePlan } from '../hooks/useGeneratePlan';
 import { useStudy } from '../hooks/useStudy';
-import { getAdaptiveMessages } from '../utils/helpers';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { prediction, plan, done, toggleTask, predicting, stats, streak } = useStudy();
   const { generate, planning } = useGeneratePlan({ navigateToPlanner: !plan });
-  const messages = useMemo(() => (prediction ? getAdaptiveMessages(prediction, stats, streak) : []), [prediction, stats, streak]);
 
   if (predicting) return <DashboardSkeleton />;
 
@@ -58,7 +55,7 @@ export default function Dashboard() {
       <TodayBoard plan={plan} done={done} onToggle={toggleTask} />
       <SubjectRiskCards subjects={prediction.subjects} plan={plan} weeklyBudget={prediction.profile.dailyHours * 7} />
       <StudySuggestions prediction={prediction} showPlanLink />
-      <Insights messages={messages} subjects={prediction.subjects} />
+      <Insights prediction={prediction} stats={stats} streak={streak} />
       <Charts prediction={prediction} />
       <QuickActions />
     </div>
