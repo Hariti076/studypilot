@@ -18,7 +18,7 @@ from api.planner.engine import (
     trend_hours,
     weekly_study_hours,
 )
-from app.schemas import PlanRequest, ProfileIn
+from api.schemas import PlanRequest, ProfileIn
 
 # Icons match the dashboard's persona card (trophy, hourglass, sprout, rocket).
 PERSONA_UI = {
