@@ -54,7 +54,7 @@ class ProfileIn(BaseModel):
     dailyHours: float = Field(ge=1, le=12)
     sleepHours: float = Field(ge=3, le=12)
     habits: Level
-    attendance: float = Field(default=80, ge=60, le=100)
+    attendance: float = Field(default=80, ge=0, le=100)
     parentalInvolvement: Level = "Medium"
     accessToResources: Level = "Medium"
     extracurricular: YesNo = "No"

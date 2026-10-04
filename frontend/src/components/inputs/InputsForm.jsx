@@ -73,7 +73,7 @@ function validate(f) {
   if (!f.habits) e.habits = 'Select your study-habit level';
 
   if (f.attendance === '' || Number.isNaN(Number(f.attendance))) e.attendance = 'Enter your attendance';
-  else if (Number(f.attendance) < 60 || Number(f.attendance) > 100) e.attendance = 'Choose between 60 and 100';
+  else if (Number(f.attendance) < 0 || Number(f.attendance) > 100) e.attendance = 'Choose between 0 and 100';
 
   if (f.tutoringSessions === '' || Number.isNaN(Number(f.tutoringSessions))) e.tutoringSessions = 'Enter tutoring sessions';
   else if (Number(f.tutoringSessions) < 0 || Number(f.tutoringSessions) > 8) e.tutoringSessions = 'Choose between 0 and 8';
@@ -355,11 +355,11 @@ export default function InputsForm({ initial, onSubmit, loading }) {
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Attendance (%)" error={errors.attendance} hint="60–100">
+          <Field label="Attendance (%)" error={errors.attendance} hint="0–100. Below 60 is outside the training range.">
             <input
               type="number"
               inputMode="decimal"
-              min="60"
+              min="0"
               max="100"
               className={cls(errors.attendance)}
               aria-invalid={!!errors.attendance}
