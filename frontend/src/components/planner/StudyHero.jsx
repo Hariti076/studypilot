@@ -16,9 +16,7 @@ export default function StudyHero({ prediction, plan, stats, onRecalculate, reca
   )[0];
   const progress = plan ? stats?.pct ?? 0 : 0;
   const doneHours = plan ? Math.round(((stats?.minutesDone ?? 0) / 60) * 10) / 10 : 0;
-  const modelLine = prediction.models
-    ? `${prediction.models.score} scores the exam, ${prediction.models.risk} flags risk, and ${prediction.models.persona} names the persona.`
-    : 'Scores, risk, and persona come from the trained models.';
+  const modelLine = 'Your week is built from the projected scores, the risk level, and the study style that fits your routine.';
 
   return (
     <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl shadow-indigo-950/30 sm:p-8">
@@ -27,7 +25,7 @@ export default function StudyHero({ prediction, plan, stats, onRecalculate, reca
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-2xl">
           <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-200">
-            <Brain className="h-4 w-4" /> ML study planner
+            <Brain className="h-4 w-4" /> Your study week
           </p>
           <h2 className="mt-3 max-w-xl text-4xl font-medium leading-[1.05] sm:text-5xl">A week aimed at the subjects that need it</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-300">{modelLine}</p>

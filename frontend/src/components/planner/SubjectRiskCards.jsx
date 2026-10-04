@@ -25,7 +25,7 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
           <h3 id="risk-title" className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
             Subject priority and risk
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Ordered by the planner’s priority score. Subject risk uses the projected mark, not a separate model call.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Subjects that need time sooner appear first.</p>
         </div>
         <span className="text-xs font-bold text-slate-400">{subjects.length} subjects evaluated</span>
       </div>
@@ -54,14 +54,14 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
                     <span className={`text-sm font-black ${subject.current < 60 ? 'text-rose-600' : 'text-slate-800 dark:text-slate-100'}`}>{subject.current}%</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold uppercase text-slate-400" title="Student-level predictions come from the trained models; subject projections are an estimate: current score + model-estimated gain from your recommended routine.">Projected with plan</span>
+                    <span className="block text-[10px] font-bold uppercase text-slate-400">Projected with plan</span>
                     <span className="text-sm font-black text-slate-800 dark:text-slate-100">{subject.predicted}%</span>
                   </div>
                 </div>
                 {subject.riskProbabilities ? (
                   <div className="mt-3">
                     <div className="mb-1 flex justify-between text-[10px] font-bold text-slate-500">
-                      <span>Risk probabilities</span>
+                      <span>Risk</span>
                       <span className="text-rose-600">High {Math.round(share.high * 100)}%</span>
                     </div>
                     <div className="flex h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
@@ -70,11 +70,7 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
                       <div className="h-full bg-emerald-400" style={{ width: `${share.low * 100}%` }} />
                     </div>
                   </div>
-                ) : (
-                  <p className="mt-3 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                    {subject.projectedGain > 0 ? `+${subject.projectedGain} from the recommended routine.` : 'No extra gain from the routine levers.'}
-                  </p>
-                )}
+                ) : null}
               </div>
               <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
                 <div>

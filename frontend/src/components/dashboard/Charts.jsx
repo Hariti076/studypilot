@@ -30,7 +30,7 @@ export default function Charts({ prediction }) {
         <h3 id="bar-title" className="text-base font-semibold text-slate-900 dark:text-white">
           Subject vs projected score
         </h3>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Coloured bars are projected with plan; grey is your current score. Student-level predictions come from the trained models; subject projections are an estimate: current score + model-estimated gain from your recommended routine.</p>
+        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Coloured bars are the projected score with your plan. Grey is your current score.</p>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }} barGap={4}>
@@ -53,7 +53,7 @@ export default function Charts({ prediction }) {
         <h3 id="line-title" className="text-base font-semibold text-slate-900 dark:text-white">
           Study hours vs performance
         </h3>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Student-level model score if you studied this many hours a day. Hours outside 1–44 a week are capped.</p>
+        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">How the projected score moves if you study more or fewer hours a day.</p>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={prediction.trend} margin={{ top: 16, right: 16, left: -18, bottom: 0 }}>
@@ -126,8 +126,7 @@ function HoursExplorer({ trend, currentHours }) {
           What if you studied {chosen.hours}h a day?
         </label>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Model score <span className="font-semibold text-slate-900 dark:text-white">{chosen.score}%</span>
-          {chosen.exceeded ? ' (hours capped to the training range)' : ''}
+          Projected score <span className="font-semibold text-slate-900 dark:text-white">{chosen.score}%</span>
           <span className={delta >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}>
             {' '}
             {sign}

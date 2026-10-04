@@ -45,7 +45,7 @@ function practiceCard(subject) {
     id: 'practice',
     category: 'Practice',
     title: examSoon ? `Switch ${subject.name} to exam practice` : `Start each day with ${subject.name}`,
-    why: `${subject.name} is your highest-priority subject. You are at ${subject.current}% now, and the model predicts ${subject.predicted}% with ${subject.risk.toLowerCase()} risk. The exam is ${examWhen(subject.daysLeft)}.`,
+    why: `${subject.name} is your highest-priority subject. You are at ${subject.current}% now, and the plan puts you at ${subject.predicted}% with ${subject.risk.toLowerCase()} risk. The exam is ${examWhen(subject.daysLeft)}.`,
     steps: examSoon
       ? [
           `Sit one timed ${subject.name} paper with notes closed.`,
@@ -66,7 +66,7 @@ function methodCard(persona) {
     id: 'method',
     category: 'How to study',
     title: method.title,
-    why: persona?.tip || persona?.description || 'The clustering model picked a study style from your habits.',
+    why: persona?.tip || persona?.description || 'This study style matches your routine.',
     steps: method.steps,
   };
 }
@@ -82,7 +82,7 @@ function habitCard(prediction) {
       id: 'attendance',
       category: 'Attendance',
       title: 'Raise attendance before adding more study hours',
-      why: `Attendance is ${attendance}%. The models use it as a direct input, and missed classes are hard to replace with extra evening hours.`,
+      why: `Attendance is ${attendance}%. Missed classes are hard to replace with extra evening hours.`,
       steps: [
         'Sit the next class even if the last one felt confusing.',
         'The same evening, rewrite the class notes from memory.',
@@ -96,7 +96,7 @@ function habitCard(prediction) {
       id: 'sleep',
       category: 'Recovery',
       title: 'Protect sleep so the hours you study stay with you',
-      why: `You are sleeping ${sleep} hours. The score model includes sleep, and under 7 hours makes the next day’s recall weaker.`,
+      why: `You are sleeping ${sleep} hours. Under 7 hours makes the next day’s recall weaker.`,
       steps: [
         'Stop new topics 30 minutes before bed.',
         'Keep the same wake time, including Sunday.',
@@ -138,7 +138,7 @@ function habitCard(prediction) {
     id: 'steady',
     category: 'This week',
     title: 'Follow the priority order instead of studying everything equally',
-    why: `Your current average is ${summary.avgCurrent}% and the model predicts ${summary.avgPredicted}%. That points to ${direction}.`,
+    why: `Your current average is ${summary.avgCurrent}% and the plan puts it at ${summary.avgPredicted}%. That points to ${direction}.`,
     steps: [
       'Do the highest-priority subject while you are fresh.',
       'Tick the session as soon as you finish it.',

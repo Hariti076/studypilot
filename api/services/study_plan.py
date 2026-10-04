@@ -24,22 +24,22 @@ PERSONA_UI = {
     "Consistent Attender": {
         "id": "consistent",
         "icon": "trophy",
-        "description": "The clustering model groups you with students whose attendance is well above average.",
+        "description": "You show up regularly, so the plan can use longer study blocks.",
     },
     "Tutoring-Supported": {
         "id": "tutoring",
         "icon": "rocket",
-        "description": "The clustering model groups you with students who rely on tutoring more than their peers.",
+        "description": "Tutoring is a big part of your routine, so the plan leaves room for it.",
     },
     "Low Motivation": {
         "id": "low-motivation",
         "icon": "sprout",
-        "description": "The clustering model groups you with students whose motivation is the habit furthest below average.",
+        "description": "Shorter sessions fit a week when motivation is low.",
     },
     "Irregular Attender": {
         "id": "irregular",
         "icon": "hourglass",
-        "description": "The clustering model groups you with students whose attendance is the habit furthest below average.",
+        "description": "Attendance is the habit to fix first, then add short catch-up sessions.",
     },
 }
 
@@ -158,23 +158,23 @@ def _warnings(profile: ProfileIn, meta: dict) -> list[str]:
     hours = ranges["Hours_Studied"]
     if weekly < hours["min"] or weekly > hours["max"]:
         notes.append(
-            f"Weekly study hours ({weekly:g}) are outside the training range of {hours['min']:g}–{hours['max']:g}."
+            f"Weekly study hours ({weekly:g}) are outside the usual range of {hours['min']:g}–{hours['max']:g}."
         )
     attendance = ranges["Attendance"]
     if profile.attendance < attendance["min"] or profile.attendance > attendance["max"]:
         notes.append(
-            f"Attendance ({profile.attendance:g}%) is outside the training range of {attendance['min']:g}–{attendance['max']:g}%."
+            f"Attendance ({profile.attendance:g}%) is outside the usual range of {attendance['min']:g}–{attendance['max']:g}%."
         )
     sleep = ranges["Sleep_Hours"]
     if profile.sleepHours < sleep["min"] or profile.sleepHours > sleep["max"]:
         notes.append(
-            f"Sleep ({profile.sleepHours:g} h) is outside the training range of {sleep['min']:g}–{sleep['max']:g} h."
+            f"Sleep ({profile.sleepHours:g} h) is outside the usual range of {sleep['min']:g}–{sleep['max']:g} h."
         )
     scores = ranges["Previous_Scores"]
     outside = [subject.name for subject in profile.subjects if subject.score < scores["min"] or subject.score > scores["max"]]
     if outside:
         notes.append(
-            f"{', '.join(outside)} sits outside the training score range of {scores['min']:g}–{scores['max']:g}."
+            f"{', '.join(outside)} sits outside the usual score range of {scores['min']:g}–{scores['max']:g}."
         )
     return notes
 
@@ -251,13 +251,7 @@ def predict_student(profile: ProfileIn) -> dict:
         "trend": trend,
         "feedback": build_feedback(profile, subjects, risk, persona_name, persona_tip),
         "summary": {"avgPredicted": avg_predicted, "avgCurrent": avg_current},
-        "models": {
-            "score": service.meta["best_models"]["regressor"],
-            "risk": service.meta["best_models"]["classifier"],
-            "persona": f"K-Means (k={service.meta['best_models']['clusters']})",
-        },
         "explanation": explanation,
-        "modelCard": _model_card(service),
         "warnings": _warnings(profile, service.meta),
         "ml": {
             "predicted_score": round(base["predicted_score"], 1),
@@ -269,40 +263,6 @@ def predict_student(profile: ProfileIn) -> dict:
             "levers": levers,
             "plan_gain": plan_gain,
         },
-    }
-
-
-def _model_card(service) -> dict:
-    """Facts already stored with the trained models. No new numbers are invented."""
-    metrics = service.meta["test_metrics"]
-    regression = metrics["regression_all_rows"]
-    classification = metrics["classification"]
-    return {
-        "dataset": "Kaggle Student Performance Factors, 6,607 rows after cleaning. The set is synthetic.",
-        "split": "80/20, stratified by risk. Models were chosen with 5-fold cross-validation on the training set.",
-        "regression": {
-            "model": service.meta["best_models"]["regressor"],
-            "MAE": round(regression["MAE"], 2),
-            "RMSE": round(regression["RMSE"], 2),
-            "R2": round(regression["R2"], 3),
-        },
-        "classification": {
-            "model": service.meta["best_models"]["classifier"],
-            "accuracy": round(classification["Accuracy"], 3),
-            "f1Macro": round(classification["F1_macro"], 3),
-            "rocAuc": round(classification["ROC_AUC"], 3),
-            "highRiskRecall": round(classification["High_Risk_Recall"], 3),
-        },
-        "clustering": {
-            "model": f"K-Means (k={service.meta['best_models']['clusters']})",
-            "silhouette": round(metrics["clustering_silhouette"], 2),
-        },
-        "notes": [
-            "Linear Regression and Logistic Regression were kept because they matched or beat the tree models on this data.",
-            "High-risk recall is the classification number that matters most: missing a struggling student is worse than a false alarm.",
-            "Persona groups are soft. A silhouette of 0.13 means the cluster is a study hint, not a fixed type.",
-            "Predictions are planning estimates. The score shown in the app includes a range of about ±1.3 marks.",
-        ],
     }
 
 
