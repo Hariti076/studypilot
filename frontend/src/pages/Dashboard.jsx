@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
 import ExplainFactors from '../components/dashboard/ExplainFactors';
+import MlCard from '../components/dashboard/MlCard';
 import Insights from '../components/dashboard/Insights';
 import ModelFacts from '../components/dashboard/ModelFacts';
 import Charts from '../components/dashboard/Charts';
@@ -50,6 +51,14 @@ export default function Dashboard() {
       </header>
 
       <StudyHero prediction={prediction} plan={plan} stats={stats} onRecalculate={generate} recalculating={planning} />
+      {prediction.warnings?.length > 0 && (
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100" role="status">
+          {prediction.warnings.map((note) => (
+            <p key={note}>{note}</p>
+          ))}
+        </div>
+      )}
+      <MlCard prediction={prediction} />
       <TodayBoard plan={plan} done={done} onToggle={toggleTask} />
       <SubjectRiskCards subjects={prediction.subjects} plan={plan} weeklyBudget={prediction.profile.dailyHours * 7} />
       <StudySuggestions prediction={prediction} showPlanLink />

@@ -28,9 +28,9 @@ export default function Charts({ prediction }) {
     <div className="grid gap-5 lg:grid-cols-2">
       <section className="card" aria-labelledby="bar-title">
         <h3 id="bar-title" className="text-base font-semibold text-slate-900 dark:text-white">
-          Subject vs predicted score
+          Subject vs projected score
         </h3>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Coloured bars show prediction by risk; grey shows your current score.</p>
+        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Coloured bars are projected with plan; grey is your current score. Student-level predictions come from the trained models; subject projections are an estimate: current score + model-estimated gain from your recommended routine.</p>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }} barGap={4}>
@@ -39,7 +39,7 @@ export default function Charts({ prediction }) {
               <YAxis domain={[0, 100]} tickLine={false} axisLine={false} tick={{ fill: c.axis, fontSize: 12 }} />
               <Tooltip cursor={{ fill: c.cursor }} contentStyle={c.tooltip} formatter={(v, n) => [`${v}%`, n]} />
               <Bar dataKey="current" name="Current" fill={c.muted} radius={[8, 8, 0, 0]} maxBarSize={28} />
-              <Bar dataKey="predicted" name="Predicted" radius={[8, 8, 0, 0]} maxBarSize={28}>
+              <Bar dataKey="predicted" name="Projected with plan" radius={[8, 8, 0, 0]} maxBarSize={28}>
                 {barData.map((d) => (
                   <Cell key={d.name} fill={RISK_STYLES[d.risk].hex} />
                 ))}
@@ -53,7 +53,7 @@ export default function Charts({ prediction }) {
         <h3 id="line-title" className="text-base font-semibold text-slate-900 dark:text-white">
           Study hours vs performance
         </h3>
-        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Average predicted score if you studied this many hours a day.</p>
+        <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">Student-level model score if you studied this many hours a day. Hours outside 1–44 a week are capped.</p>
         <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={prediction.trend} margin={{ top: 16, right: 16, left: -18, bottom: 0 }}>
@@ -126,7 +126,8 @@ function HoursExplorer({ trend, currentHours }) {
           What if you studied {chosen.hours}h a day?
         </label>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          Predicted average <span className="font-semibold text-slate-900 dark:text-white">{chosen.score}%</span>
+          Model score <span className="font-semibold text-slate-900 dark:text-white">{chosen.score}%</span>
+          {chosen.exceeded ? ' (hours capped to the training range)' : ''}
           <span className={delta >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300'}>
             {' '}
             {sign}

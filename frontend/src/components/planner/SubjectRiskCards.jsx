@@ -25,7 +25,7 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
           <h3 id="risk-title" className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
             Subject priority and risk
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Ordered by the planner’s priority score. The bar is the classifier’s risk split.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Ordered by the planner’s priority score. Subject risk uses the projected mark, not a separate model call.</p>
         </div>
         <span className="text-xs font-bold text-slate-400">{subjects.length} subjects evaluated</span>
       </div>
@@ -54,26 +54,27 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
                     <span className={`text-sm font-black ${subject.current < 60 ? 'text-rose-600' : 'text-slate-800 dark:text-slate-100'}`}>{subject.current}%</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold uppercase text-slate-400">Predicted</span>
+                    <span className="block text-[10px] font-bold uppercase text-slate-400" title="Student-level predictions come from the trained models; subject projections are an estimate: current score + model-estimated gain from your recommended routine.">Projected with plan</span>
                     <span className="text-sm font-black text-slate-800 dark:text-slate-100">{subject.predicted}%</span>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <div className="mb-1 flex justify-between text-[10px] font-bold text-slate-500">
-                    <span>Risk probabilities</span>
-                    <span className="text-rose-600">High {Math.round(share.high * 100)}%</span>
+                {subject.riskProbabilities ? (
+                  <div className="mt-3">
+                    <div className="mb-1 flex justify-between text-[10px] font-bold text-slate-500">
+                      <span>Risk probabilities</span>
+                      <span className="text-rose-600">High {Math.round(share.high * 100)}%</span>
+                    </div>
+                    <div className="flex h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                      <div className="h-full bg-rose-500" style={{ width: `${share.high * 100}%` }} />
+                      <div className="h-full bg-amber-400" style={{ width: `${share.medium * 100}%` }} />
+                      <div className="h-full bg-emerald-400" style={{ width: `${share.low * 100}%` }} />
+                    </div>
                   </div>
-                  <div className="flex h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                    <div className="h-full bg-rose-500" style={{ width: `${share.high * 100}%` }} />
-                    <div className="h-full bg-amber-400" style={{ width: `${share.medium * 100}%` }} />
-                    <div className="h-full bg-emerald-400" style={{ width: `${share.low * 100}%` }} />
-                  </div>
-                  <div className="mt-1 flex justify-between text-[9px] font-semibold text-slate-400">
-                    <span>Low {Math.round(share.low * 100)}%</span>
-                    <span>Med {Math.round(share.medium * 100)}%</span>
-                    <span>High {Math.round(share.high * 100)}%</span>
-                  </div>
-                </div>
+                ) : (
+                  <p className="mt-3 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                    {subject.projectedGain > 0 ? `+${subject.projectedGain} from the recommended routine.` : 'No extra gain from the routine levers.'}
+                  </p>
+                )}
               </div>
               <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
                 <div>

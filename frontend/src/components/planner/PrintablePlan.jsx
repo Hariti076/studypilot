@@ -18,7 +18,7 @@ export default function PrintablePlan({ prediction, plan }) {
           <tr className="border-b border-slate-300 text-left">
             <th className="py-1 pr-2">Subject</th>
             <th className="py-1 pr-2">Exam</th>
-            <th className="py-1 pr-2">Predicted</th>
+            <th className="py-1 pr-2">Projected with plan</th>
             <th className="py-1">Priority</th>
           </tr>
         </thead>
