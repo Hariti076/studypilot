@@ -1,5 +1,13 @@
 # Data
 
-Training used the Kaggle dataset **Student Performance Factors** (6,607 rows after cleaning). The file is synthetic and is not stored in this folder.
+The modelling table is the Kaggle dataset [Student Performance Factors](https://www.kaggle.com/datasets/lainguyn123/student-performance-factors) by lainguyn123. The file has 6,607 rows and 20 columns. It is synthetic.
 
-The cleaned feature list, caps, and risk bins are in `../models/metadata.json`. Comparison tables and figures from that run are in `../reports/`.
+Download `StudentPerformanceFactors.csv` and save it as:
+
+```text
+data/StudentPerformanceFactors.csv
+```
+
+CSV files in this folder are gitignored. Do not commit the download.
+
+`src/train.py` and `src/evaluate.py` both read that path. The shipped models in `models/` were fit on this table after the six sensitive columns were left out of the feature list. See [feature_ablation.csv](../reports/feature_ablation.csv).
