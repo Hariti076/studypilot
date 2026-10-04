@@ -15,7 +15,16 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Run tests
-        run: pytest -q
+        run: |
+          set +e
+          python -m pytest -q --tb=short > pytest-out.txt 2>&1
+          code=$?
+          set -e
+          cat pytest-out.txt
+          if [ "$code" -ne 0 ]; then
+            python -c "import pathlib; text=pathlib.Path('pytest-out.txt').read_text(errors='replace')[-3500:]; text=text.replace('%','%25').replace('\r','%0D').replace('\n','%0A'); print('::error::'+text)"
+          fi
+          exit "$code"
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
