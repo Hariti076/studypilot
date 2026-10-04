@@ -16,9 +16,7 @@ export default function StudyHero({ prediction, plan, stats, onRecalculate, reca
   )[0];
   const progress = plan ? stats?.pct ?? 0 : 0;
   const doneHours = plan ? Math.round(((stats?.minutesDone ?? 0) / 60) * 10) / 10 : 0;
-  const modelLine = prediction.models
-    ? `${prediction.models.score} scores the exam, ${prediction.models.risk} flags risk, and ${prediction.models.persona} names the persona.`
-    : 'Scores, risk, and persona come from the trained models.';
+  const modelLine = 'Your week is built from the projected scores, the risk level, and the study style that fits your routine.';
 
   return (
     <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl shadow-indigo-950/30 sm:p-8">

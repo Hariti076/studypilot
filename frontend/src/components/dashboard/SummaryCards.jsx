@@ -72,11 +72,6 @@ export default function SummaryCards({ prediction }) {
           <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
           {persona.tip}
         </p>
-        {prediction.models && (
-          <p className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-            {prediction.models.score} · {prediction.models.risk} · {prediction.models.persona}
-          </p>
-        )}
       </CardShell>
     </section>
   );

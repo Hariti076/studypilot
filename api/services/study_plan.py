@@ -251,13 +251,7 @@ def predict_student(profile: ProfileIn) -> dict:
         "trend": trend,
         "feedback": build_feedback(profile, subjects, risk, persona_name, persona_tip),
         "summary": {"avgPredicted": avg_predicted, "avgCurrent": avg_current},
-        "models": {
-            "score": service.meta["best_models"]["regressor"],
-            "risk": service.meta["best_models"]["classifier"],
-            "persona": f"K-Means (k={service.meta['best_models']['clusters']})",
-        },
         "explanation": explanation,
-        "modelCard": _model_card(service),
         "warnings": _warnings(profile, service.meta),
         "ml": {
             "predicted_score": round(base["predicted_score"], 1),
@@ -269,40 +263,6 @@ def predict_student(profile: ProfileIn) -> dict:
             "levers": levers,
             "plan_gain": plan_gain,
         },
-    }
-
-
-def _model_card(service) -> dict:
-    """Facts already stored with the trained models. No new numbers are invented."""
-    metrics = service.meta["test_metrics"]
-    regression = metrics["regression_all_rows"]
-    classification = metrics["classification"]
-    return {
-        "dataset": "Kaggle Student Performance Factors, 6,607 rows after cleaning. The set is synthetic.",
-        "split": "80/20, stratified by risk. Models were chosen with 5-fold cross-validation on the training set.",
-        "regression": {
-            "model": service.meta["best_models"]["regressor"],
-            "MAE": round(regression["MAE"], 2),
-            "RMSE": round(regression["RMSE"], 2),
-            "R2": round(regression["R2"], 3),
-        },
-        "classification": {
-            "model": service.meta["best_models"]["classifier"],
-            "accuracy": round(classification["Accuracy"], 3),
-            "f1Macro": round(classification["F1_macro"], 3),
-            "rocAuc": round(classification["ROC_AUC"], 3),
-            "highRiskRecall": round(classification["High_Risk_Recall"], 3),
-        },
-        "clustering": {
-            "model": f"K-Means (k={service.meta['best_models']['clusters']})",
-            "silhouette": round(metrics["clustering_silhouette"], 2),
-        },
-        "notes": [
-            "Linear Regression and Logistic Regression were kept because they matched or beat the tree models on this data.",
-            "High-risk recall is the classification number that matters most: missing a struggling student is worse than a false alarm.",
-            "Persona groups are soft. A silhouette of 0.13 means the cluster is a study hint, not a fixed type.",
-            "Predictions are planning estimates. The score shown in the app includes a range of about ±1.3 marks.",
-        ],
     }
 
 

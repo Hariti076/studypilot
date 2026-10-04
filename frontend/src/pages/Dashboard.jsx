@@ -4,7 +4,6 @@ import { LayoutDashboard } from 'lucide-react';
 import ExplainFactors from '../components/dashboard/ExplainFactors';
 import MlCard from '../components/dashboard/MlCard';
 import Insights from '../components/dashboard/Insights';
-import ModelFacts from '../components/dashboard/ModelFacts';
 import Charts from '../components/dashboard/Charts';
 import TodayBoard from '../components/dashboard/TodayBoard';
 import QuickActions from '../components/dashboard/QuickActions';
@@ -65,7 +64,6 @@ export default function Dashboard() {
       <ExplainFactors explanation={prediction.explanation} />
       <Insights messages={messages} subjects={prediction.subjects} />
       <Charts prediction={prediction} />
-      <ModelFacts card={prediction.modelCard} />
       <QuickActions />
     </div>
   );
