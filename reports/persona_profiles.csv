@@ -1,0 +1,5 @@
+Persona,Hours_Studied,Attendance,Sleep_Hours,Motivation_Num,Tutoring_Sessions,Physical_Activity,Previous_Scores,Exam_Score,Students
+Consistent Attender,19.88,90.03,6.97,1.29,1.07,2.79,75.01,69.14,1927
+Irregular Attender,20.31,69.75,7.11,1.31,1.06,3.09,75.28,65.39,1921
+Low Motivation,19.96,79.97,7.03,0.0,1.03,2.97,75.41,66.54,1555
+Tutoring-Supported,19.61,80.22,6.99,0.82,3.43,3.05,74.39,68.04,1204

@@ -1,0 +1,194 @@
+{
+  "sklearn_version": "1.6.1",
+  "target": "Exam_Score",
+  "feature_columns": [
+    "Hours_Studied",
+    "Attendance",
+    "Parental_Involvement",
+    "Access_to_Resources",
+    "Extracurricular_Activities",
+    "Sleep_Hours",
+    "Previous_Scores",
+    "Motivation_Level",
+    "Internet_Access",
+    "Tutoring_Sessions",
+    "Teacher_Quality",
+    "Peer_Influence",
+    "Physical_Activity",
+    "Engagement_Index",
+    "Sleep_Deficit",
+    "Prior_x_Effort",
+    "Motivation_Num"
+  ],
+  "raw_input_columns": [
+    "Hours_Studied",
+    "Attendance",
+    "Parental_Involvement",
+    "Access_to_Resources",
+    "Extracurricular_Activities",
+    "Sleep_Hours",
+    "Previous_Scores",
+    "Motivation_Level",
+    "Internet_Access",
+    "Tutoring_Sessions",
+    "Teacher_Quality",
+    "Peer_Influence",
+    "Physical_Activity"
+  ],
+  "dropped_features": [
+    "Gender",
+    "Family_Income",
+    "Parental_Education_Level",
+    "Learning_Disabilities",
+    "School_Type",
+    "Distance_from_Home"
+  ],
+  "caps": {
+    "Hours_Studied": [
+      -8.0,
+      48.0
+    ],
+    "Attendance": [
+      10.0,
+      150.0
+    ],
+    "Sleep_Hours": [
+      0.0,
+      14.0
+    ],
+    "Previous_Scores": [
+      -12.0,
+      163.0
+    ],
+    "Tutoring_Sessions": [
+      -2.0,
+      5.0
+    ],
+    "Physical_Activity": [
+      -4.0,
+      10.0
+    ]
+  },
+  "target_outlier_band": [
+    53.0,
+    81.0
+  ],
+  "risk_bins": [
+    0,
+    65,
+    70,
+    101
+  ],
+  "risk_labels": [
+    "High",
+    "Medium",
+    "Low"
+  ],
+  "typical_error_90": 1.2718271952859004,
+  "persona_map": {
+    "0": "Consistent Attender",
+    "1": "Tutoring-Supported",
+    "2": "Low Motivation",
+    "3": "Irregular Attender"
+  },
+  "persona_tips": {
+    "Consistent Attender": "Great routine. Add timed practice tests and spaced revision to stay ahead.",
+    "Tutoring-Supported": "Prepare questions before each tutoring session and revise its topics within 24 hours.",
+    "Low Motivation": "Start small: 25-minute sessions, a fixed time each day, and a reward after each one.",
+    "Irregular Attender": "Attendance is your biggest lever. Plan around classes first, then add short catch-up sessions."
+  },
+  "categorical_options": {
+    "Parental_Involvement": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "Access_to_Resources": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "Extracurricular_Activities": [
+      "No",
+      "Yes"
+    ],
+    "Motivation_Level": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "Internet_Access": [
+      "No",
+      "Yes"
+    ],
+    "Teacher_Quality": [
+      "High",
+      "Low",
+      "Medium"
+    ],
+    "Peer_Influence": [
+      "Negative",
+      "Neutral",
+      "Positive"
+    ]
+  },
+  "numeric_ranges": {
+    "Hours_Studied": {
+      "min": 1.0,
+      "max": 44.0,
+      "median": 20.0
+    },
+    "Attendance": {
+      "min": 60.0,
+      "max": 100.0,
+      "median": 80.0
+    },
+    "Sleep_Hours": {
+      "min": 4.0,
+      "max": 10.0,
+      "median": 7.0
+    },
+    "Previous_Scores": {
+      "min": 50.0,
+      "max": 100.0,
+      "median": 75.0
+    },
+    "Tutoring_Sessions": {
+      "min": 0.0,
+      "max": 8.0,
+      "median": 1.0
+    },
+    "Physical_Activity": {
+      "min": 0.0,
+      "max": 6.0,
+      "median": 3.0
+    }
+  },
+  "best_models": {
+    "regressor": "Linear Regression",
+    "classifier": "Logistic Regression",
+    "clusters": 4
+  },
+  "test_metrics": {
+    "regression_all_rows": {
+      "MAE": 0.8578794286706285,
+      "RMSE": 2.531539425429423,
+      "R2": 0.6264670905138325
+    },
+    "regression_typical_rows": {
+      "RMSE": 0.8136644879564614,
+      "R2": 0.9407344899846829
+    },
+    "classification": {
+      "Accuracy": 0.875945537065053,
+      "F1_macro": 0.874577765086833,
+      "ROC_AUC": 0.9750825080062991,
+      "High_Risk_Recall": 0.9037800687285223
+    },
+    "score_range_coverage": {
+      "all_rows": 0.8653555219364599,
+      "typical_rows": 0.8726163234172387
+    },
+    "clustering_silhouette": 0.12655456446646396
+  }
+}
