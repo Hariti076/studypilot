@@ -25,7 +25,7 @@ export default function StudySuggestions({ prediction, showPlanLink = false }) {
             <Lightbulb className="h-5 w-5 text-amber-500" />
             Ways to improve your studying
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Suggestions from your predicted scores, risk, and habits. Each one says why it applies to you.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Suggestions from how the AI read your routine. Each one says why it applies to you.</p>
         </div>
         {showPlanLink && (
           <Link to="/planner" className="text-xs font-bold text-indigo-600 hover:text-indigo-500 dark:text-indigo-300">
