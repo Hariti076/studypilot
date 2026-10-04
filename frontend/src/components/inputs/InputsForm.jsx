@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BookOpen, Brain, GraduationCap, Loader2, Moon, Plus, Sparkles, Trash2, Wand2 } from 'lucide-react';
+import { BookOpen, GraduationCap, Loader2, Moon, Plus, Sparkles, Trash2, Wand2 } from 'lucide-react';
 import { todayISO } from '../../utils/helpers';
 import { sampleProfile } from '../../services/mock/sampleData';
 
@@ -291,7 +291,7 @@ export default function InputsForm({ initial, onSubmit, loading }) {
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Field label="Study hours / day" error={errors.dailyHours} hint="The score model treats this as weekly hours × 7">
+          <Field label="Study hours / day" error={errors.dailyHours} hint="How long you can study on a normal day">
             <input
               type="number"
               inputMode="decimal"
@@ -319,7 +319,7 @@ export default function InputsForm({ initial, onSubmit, loading }) {
               onChange={(e) => update({ sleepHours: e.target.value })}
             />
           </Field>
-          <Field label="Study habits" error={errors.habits} hint="Sent to the models as motivation level">
+          <Field label="Study habits" error={errors.habits} hint="How regular your study week is">
             <select
               className={cls(errors.habits)}
               aria-invalid={!!errors.habits}
@@ -332,7 +332,7 @@ export default function InputsForm({ initial, onSubmit, loading }) {
               <option value="High">High — very consistent</option>
             </select>
           </Field>
-          <Field label="Best focus time" hint="The planner starts the hardest subject then. This is not a model input.">
+          <Field label="Best focus time" hint="The planner starts the hardest subject then.">
             <select className="input" value={form.peakEnergy || 'Evening'} onChange={(e) => update({ peakEnergy: e.target.value })}>
               <option value="Morning">Morning</option>
               <option value="Afternoon">Afternoon</option>
@@ -350,12 +350,12 @@ export default function InputsForm({ initial, onSubmit, loading }) {
           <div>
             <h2 className="text-base font-semibold text-slate-900 dark:text-white">Learning context</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              These are the other inputs the trained score, risk, and persona models use.
+              Attendance, support, and the rest of your study setup.
             </p>
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="Attendance (%)" error={errors.attendance} hint="0–100. Below 60 is outside the training range.">
+          <Field label="Attendance (%)" error={errors.attendance} hint="0–100">
             <input
               type="number"
               inputMode="decimal"
@@ -438,7 +438,7 @@ export default function InputsForm({ initial, onSubmit, loading }) {
 
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-          <Brain className="h-4 w-4 shrink-0" /> Scores and the weekly plan are produced by the local model API.
+          Your scores and weekly plan stay in this browser.
         </p>
         <button type="submit" disabled={loading} className="btn-primary sm:min-w-[220px]">
           {loading ? (

@@ -2,8 +2,8 @@ import { GraduationCap, Moon, Sun } from 'lucide-react';
 import { useTheme } from '../../hooks/useTheme';
 
 const POINTS = [
-  ['Predict', 'A score for every subject, with a range instead of a false certainty.'],
-  ['Understand', 'Risk and a study persona, plus the habits that moved the score.'],
+  ['Predict', 'A projected score for every subject.'],
+  ['Understand', 'Which subjects need time first, and a study style that fits your routine.'],
   ['Plan', 'A week of short sessions, spaced reviews, and the weakest topic first.'],
 ];
 
@@ -20,7 +20,7 @@ export default function AuthCard({ title, subtitle, children, footer }) {
             <GraduationCap className="h-4 w-4" /> StudyPilot
           </span>
           <h2 className="mt-8 max-w-md text-5xl font-medium leading-[1.05]">Study time, aimed at the subjects that need it.</h2>
-          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-300">Three trained models score the week. The planner turns that into sessions you can finish.</p>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-slate-300">A personalised week of study sessions, aimed at the subjects that need the time.</p>
         </div>
         <ol className="relative space-y-5">
           {POINTS.map(([label, text], index) => (

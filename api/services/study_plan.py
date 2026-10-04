@@ -24,22 +24,22 @@ PERSONA_UI = {
     "Consistent Attender": {
         "id": "consistent",
         "icon": "trophy",
-        "description": "The clustering model groups you with students whose attendance is well above average.",
+        "description": "You show up regularly, so the plan can use longer study blocks.",
     },
     "Tutoring-Supported": {
         "id": "tutoring",
         "icon": "rocket",
-        "description": "The clustering model groups you with students who rely on tutoring more than their peers.",
+        "description": "Tutoring is a big part of your routine, so the plan leaves room for it.",
     },
     "Low Motivation": {
         "id": "low-motivation",
         "icon": "sprout",
-        "description": "The clustering model groups you with students whose motivation is the habit furthest below average.",
+        "description": "Shorter sessions fit a week when motivation is low.",
     },
     "Irregular Attender": {
         "id": "irregular",
         "icon": "hourglass",
-        "description": "The clustering model groups you with students whose attendance is the habit furthest below average.",
+        "description": "Attendance is the habit to fix first, then add short catch-up sessions.",
     },
 }
 
@@ -158,23 +158,23 @@ def _warnings(profile: ProfileIn, meta: dict) -> list[str]:
     hours = ranges["Hours_Studied"]
     if weekly < hours["min"] or weekly > hours["max"]:
         notes.append(
-            f"Weekly study hours ({weekly:g}) are outside the training range of {hours['min']:g}–{hours['max']:g}."
+            f"Weekly study hours ({weekly:g}) are outside the usual range of {hours['min']:g}–{hours['max']:g}."
         )
     attendance = ranges["Attendance"]
     if profile.attendance < attendance["min"] or profile.attendance > attendance["max"]:
         notes.append(
-            f"Attendance ({profile.attendance:g}%) is outside the training range of {attendance['min']:g}–{attendance['max']:g}%."
+            f"Attendance ({profile.attendance:g}%) is outside the usual range of {attendance['min']:g}–{attendance['max']:g}%."
         )
     sleep = ranges["Sleep_Hours"]
     if profile.sleepHours < sleep["min"] or profile.sleepHours > sleep["max"]:
         notes.append(
-            f"Sleep ({profile.sleepHours:g} h) is outside the training range of {sleep['min']:g}–{sleep['max']:g} h."
+            f"Sleep ({profile.sleepHours:g} h) is outside the usual range of {sleep['min']:g}–{sleep['max']:g} h."
         )
     scores = ranges["Previous_Scores"]
     outside = [subject.name for subject in profile.subjects if subject.score < scores["min"] or subject.score > scores["max"]]
     if outside:
         notes.append(
-            f"{', '.join(outside)} sits outside the training score range of {scores['min']:g}–{scores['max']:g}."
+            f"{', '.join(outside)} sits outside the usual score range of {scores['min']:g}–{scores['max']:g}."
         )
     return notes
 

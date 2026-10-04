@@ -20,7 +20,7 @@ export default function PlanGrid({ plan, done, onToggle }) {
       <div className="flex flex-col gap-4 border-b border-slate-100 pb-5 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-lg font-black tracking-tight text-slate-900 dark:text-white">Personalized 7-day study schedule</h3>
-          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Focus blocks from the model outputs. Click a row to mark it done.</p>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Click a row to mark it done.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">

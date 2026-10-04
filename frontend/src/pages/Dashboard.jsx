@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard } from 'lucide-react';
-import ExplainFactors from '../components/dashboard/ExplainFactors';
-import MlCard from '../components/dashboard/MlCard';
 import Insights from '../components/dashboard/Insights';
 import Charts from '../components/dashboard/Charts';
 import TodayBoard from '../components/dashboard/TodayBoard';
@@ -57,11 +55,9 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-      <MlCard prediction={prediction} />
       <TodayBoard plan={plan} done={done} onToggle={toggleTask} />
       <SubjectRiskCards subjects={prediction.subjects} plan={plan} weeklyBudget={prediction.profile.dailyHours * 7} />
       <StudySuggestions prediction={prediction} showPlanLink />
-      <ExplainFactors explanation={prediction.explanation} />
       <Insights messages={messages} subjects={prediction.subjects} />
       <Charts prediction={prediction} />
       <QuickActions />

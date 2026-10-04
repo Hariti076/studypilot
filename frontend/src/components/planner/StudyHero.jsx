@@ -25,7 +25,7 @@ export default function StudyHero({ prediction, plan, stats, onRecalculate, reca
       <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-2xl">
           <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-200">
-            <Brain className="h-4 w-4" /> ML study planner
+            <Brain className="h-4 w-4" /> Your study week
           </p>
           <h2 className="mt-3 max-w-xl text-4xl font-medium leading-[1.05] sm:text-5xl">A week aimed at the subjects that need it</h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-300">{modelLine}</p>
