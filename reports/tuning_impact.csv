@@ -1,0 +1,10 @@
+Model,CV_RMSE,test_RMSE,train_RMSE,overfit_gap,Best_Params,CV_F1,test_F1,train_F1
+Linear Regression,0.9069920211963863,1.8964222626954774,0.9111437988118133,0.9852784638836641,{},,,
+Ridge,0.906992049470929,1.896420302313684,0.9111438001835974,0.9852765021300867,{'model__alpha': 0.01},,,
+Gradient Boosting,0.9835946365909353,1.9285670419909662,0.9063924517039095,1.0221745902870567,"{'model__subsample': 0.8, 'model__n_estimators': 200, 'model__max_depth': 2, 'model__learning_rate': 0.1}",,,
+Random Forest,1.2436684581574853,2.06641562855506,0.5615512142088163,1.504864414346244,"{'model__n_estimators': 300, 'model__min_samples_split': 5, 'model__min_samples_leaf': 1, 'model__max_depth': 20}",,,
+Baseline (mean),3.3643918256206824,3.689948862489308,3.3643918256206824,0.3255570368686258,{},,,
+Logistic Regression,,,,0.013256430532555985,{'model__C': 100.0},0.8769622704174367,0.8669368492565367,0.8801932797890927
+Gradient Boosting,,,,0.04979648744014309,"{'model__subsample': 0.8, 'model__n_estimators': 200, 'model__max_depth': 2, 'model__learning_rate': 0.1}",0.8425975928287283,0.8328277594878338,0.8826242469279769
+Random Forest,,,,0.1733040604272853,"{'model__n_estimators': 300, 'model__min_samples_split': 5, 'model__min_samples_leaf': 1, 'model__max_depth': 20}",0.8120180294760267,0.8152712689424749,0.9885753293697602
+Baseline (majority),,,,-2.5282187426561853e-05,{},0.22619494103429594,0.2262202232217225,0.22619494103429594
