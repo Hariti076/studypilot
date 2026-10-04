@@ -21,9 +21,9 @@ export async function signupUser({ name, email, password }) {
 }
 
 export async function predictStudent(profile) {
-  return request('/api/predict', { method: 'POST', body: profile, auth: false });
+  return request('/api/predict', { method: 'POST', body: profile, auth: false, timeout: 60000 });
 }
 
 export async function generatePlan({ profile, prediction }) {
-  return request('/api/plan', { method: 'POST', body: { profile, prediction }, auth: false });
+  return request('/api/plan', { method: 'POST', body: { profile, prediction }, auth: false, timeout: 60000 });
 }

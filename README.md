@@ -41,6 +41,10 @@ npm run dev
 
 Open http://localhost:5173. Create an account, open Inputs, and use Fill sample data. Analyse calls `POST /api/predict`. Build weekly plan calls `POST /api/plan`.
 
+## Deploy
+
+Vercel imports this repo as one project with two services. Keep the root directory as `./` and the preset as Services. `vercel.json` sends `/api` to FastAPI and every other path to the Vite app. Leave `VITE_API_URL` empty so the site calls the API on the same domain.
+
 `python src/train.py` only checks that the three model files are present. `python src/evaluate.py` prints the test metrics stored in `models/metadata.json`.
 
 ## Models
