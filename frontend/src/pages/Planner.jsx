@@ -10,7 +10,7 @@ import { PlannerSkeleton } from '../components/ui/Skeleton';
 import { useGeneratePlan } from '../hooks/useGeneratePlan';
 import { useStudy } from '../hooks/useStudy';
 import { useToast } from '../hooks/useToast';
-import { missedSessionCount, planToIcs, todayName } from '../utils/helpers';
+import { missedSessionCount, PERSONA_SCHEDULE, planToIcs, todayName } from '../utils/helpers';
 
 export default function Planner() {
   const { prediction, plan, planStart, done, toggleTask, stats, rescheduleMissed } = useStudy();
@@ -71,7 +71,10 @@ export default function Planner() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-4xl font-medium text-slate-900 dark:text-white">Weekly planner</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Focus blocks, spaced reviews, and a timer for the next session.</p>
+          <p className="max-w-xl text-sm text-slate-500 dark:text-slate-400">
+            {prediction.persona?.name ? `${prediction.persona.name} shapes the session length. ` : ''}
+            {PERSONA_SCHEDULE[prediction.persona?.name] || 'High-priority subjects take the first blocks.'} Red is first, amber is next, green can wait.
+          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           {missed > 0 && (

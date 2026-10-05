@@ -97,12 +97,13 @@ function SessionRow({ item, reason, checked, onToggle }) {
             {item.review && <span className="mr-1.5 rounded-md bg-indigo-100 px-1.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">Review</span>}
             {item.carried && <span className="mr-1.5 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-500/20 dark:text-amber-200">Moved</span>}
             {item.stretched && <span className="mr-1.5 rounded-md bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold text-violet-800 dark:bg-violet-500/20 dark:text-violet-200">Harder</span>}
+            {item.eased && <span className="mr-1.5 rounded-md bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold text-sky-800 dark:bg-sky-500/20 dark:text-sky-200">Eased</span>}
             {item.task}
           </span>
           <span className="mt-0.5 block truncate text-[11px] font-medium text-slate-500">{item.duration}{reason ? ` · ${reason}` : ''}</span>
         </span>
       </button>
-      <span className="self-end rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-200 sm:self-auto">
+      <span className={`self-end rounded-xl border px-3 py-1 text-xs font-black sm:self-auto ${PRIORITY_PILL[item.priority] || PRIORITY_PILL.Medium}`}>
         {item.priority} priority
       </span>
     </div>

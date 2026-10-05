@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { generatePlan, predictStudent } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
-import { applyStretch, calcStreak, computeStats, shiftMissedSessions, todayISO, todayName } from '../utils/helpers';
+import { applyStretch, calcStreak, computeStats, easeWhenBehind, shiftMissedSessions, todayISO, todayName } from '../utils/helpers';
 
 export const StudyContext = createContext(null);
 
@@ -42,9 +42,20 @@ export function StudyProvider({ children }) {
 
   useEffect(() => {
     setData((current) => {
-      const shifted = shiftMissedSessions(current.plan, current.done, current.planStart);
-      if (!shifted) return current;
-      return { ...current, plan: shifted, guideNote: 'Missed sessions moved onto the days still ahead.' };
+      let plan = current.plan;
+      const notes = [];
+      const shifted = shiftMissedSessions(plan, current.done, current.planStart);
+      if (shifted) {
+        plan = shifted;
+        notes.push('Missed sessions moved onto the days still ahead.');
+      }
+      const eased = easeWhenBehind(plan, current.done, current.planStart);
+      if (eased) {
+        plan = eased;
+        notes.push('Progress is behind, so the lighter sessions were shortened.');
+      }
+      if (!notes.length) return current;
+      return { ...current, plan, guideNote: notes.join(' ') };
     });
   }, [user.id]);
 
