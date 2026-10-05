@@ -1,11 +1,11 @@
 import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { generatePlan, predictStudent } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
-import { calcStreak, computeStats, shiftMissedSessions, todayISO, todayName } from '../utils/helpers';
+import { applyStretch, calcStreak, computeStats, shiftMissedSessions, todayISO, todayName } from '../utils/helpers';
 
 export const StudyContext = createContext(null);
 
-const EMPTY = { profile: null, prediction: null, plan: null, planStart: null, done: {}, past: [] };
+const EMPTY = { profile: null, prediction: null, plan: null, planStart: null, done: {}, past: [], guideNote: '' };
 const storageKey = (userId) => `sp:data:${userId}`;
 
 function load(userId) {
@@ -40,6 +40,14 @@ export function StudyProvider({ children }) {
     }
   }, [data, user.id]);
 
+  useEffect(() => {
+    setData((current) => {
+      const shifted = shiftMissedSessions(current.plan, current.done, current.planStart);
+      if (!shifted) return current;
+      return { ...current, plan: shifted, guideNote: 'Missed sessions moved onto the days still ahead.' };
+    });
+  }, [user.id]);
+
   /** Send the form to the model service. Replaces the prediction and invalidates the old plan. */
   const submitInputs = useCallback(async (profile) => {
     setPredicting(true);
@@ -69,9 +77,16 @@ export function StudyProvider({ children }) {
   const toggleTask = useCallback((id) => {
     setData((d) => {
       const done = { ...d.done };
-      if (done[id]) delete done[id];
-      else done[id] = todayISO();
-      return { ...d, done };
+      const finishing = !done[id];
+      if (finishing) done[id] = todayISO();
+      else delete done[id];
+      const stretched = applyStretch(d.plan, done);
+      return {
+        ...d,
+        done,
+        plan: stretched || d.plan,
+        guideNote: stretched && finishing ? 'Completed work raised the next sessions a step.' : d.guideNote,
+      };
     });
   }, []);
 
@@ -95,6 +110,7 @@ export function StudyProvider({ children }) {
       plan: data.plan,
       planStart: data.planStart,
       done: data.done,
+      guideNote: data.guideNote,
       stats,
       streak,
       predicting,

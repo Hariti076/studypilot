@@ -89,7 +89,7 @@ export default function Planner() {
       </div>
       <StudyHero prediction={prediction} plan={plan} stats={stats} onRecalculate={generate} recalculating={planning} />
       <FocusTimer session={upcoming} onComplete={() => upcoming && toggleTask(upcoming.id)} />
-      {planning ? <PlannerSkeleton /> : <PlanGrid plan={plan} done={done} onToggle={toggleTask} />}
+      {planning ? <PlannerSkeleton /> : <PlanGrid plan={plan} subjects={prediction.subjects} done={done} onToggle={toggleTask} />}
       <StudySuggestions prediction={prediction} />
       <PrintablePlan prediction={prediction} plan={plan} />
     </div>

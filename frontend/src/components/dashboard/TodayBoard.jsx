@@ -39,11 +39,11 @@ export default function TodayBoard({ plan, done, onToggle }) {
                   type="button"
                   onClick={() => onToggle(item.id)}
                   aria-pressed={checked}
-                  className={`flex w-full items-start gap-3 rounded-2xl border px-4 py-3 text-left transition ${
+                  className={`flex w-full items-start gap-3 rounded-2xl border border-l-4 px-4 py-3 text-left transition ${
                     checked
                       ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-500/30 dark:bg-emerald-500/10'
                       : 'border-slate-200 bg-slate-50 hover:border-indigo-200 dark:border-slate-800 dark:bg-slate-800/60'
-                  }`}
+                  } ${item.priority === 'High' ? 'border-l-rose-500' : item.priority === 'Low' ? 'border-l-emerald-500' : 'border-l-amber-400'}`}
                 >
                   {checked ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" /> : <Circle className="mt-0.5 h-5 w-5 shrink-0 text-slate-300" />}
                   <span className="min-w-0">

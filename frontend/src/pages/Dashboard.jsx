@@ -12,11 +12,20 @@ import { DashboardSkeleton } from '../components/ui/Skeleton';
 import { useAuth } from '../hooks/useAuth';
 import { useGeneratePlan } from '../hooks/useGeneratePlan';
 import { useStudy } from '../hooks/useStudy';
+import { guideMessage } from '../utils/helpers';
+
+const GUIDE = {
+  up: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100',
+  down: 'border-rose-200 bg-rose-50 text-rose-900 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100',
+  warn: 'border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100',
+  info: 'border-indigo-200 bg-indigo-50 text-indigo-950 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-100',
+};
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { prediction, plan, done, toggleTask, predicting, stats, streak } = useStudy();
+  const { prediction, plan, done, toggleTask, predicting, stats, streak, guideNote } = useStudy();
   const { generate, planning } = useGeneratePlan({ navigateToPlanner: !plan });
+  const guide = prediction ? guideMessage(prediction, stats, streak) : null;
 
   if (predicting) return <DashboardSkeleton />;
 
@@ -45,6 +54,13 @@ export default function Dashboard() {
       </header>
 
       <StudyHero prediction={prediction} plan={plan} stats={stats} onRecalculate={generate} recalculating={planning} />
+      {(guide || guideNote) && (
+        <div className="space-y-2">
+          {guide && <p className={`rounded-2xl border px-4 py-3 text-sm font-medium ${GUIDE[guide.tone]}`}>{guide.text}</p>}
+          {guideNote && <p className="rounded-2xl border border-indigo-200 bg-white px-4 py-3 text-sm text-indigo-950 dark:border-indigo-500/30 dark:bg-slate-900 dark:text-indigo-100">{guideNote}</p>}
+        </div>
+      )}
+      <Insights prediction={prediction} stats={stats} streak={streak} />
       {prediction.warnings?.length > 0 && (
         <div className="rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100" role="status">
           {prediction.warnings.map((note) => (
@@ -55,7 +71,6 @@ export default function Dashboard() {
       <TodayBoard plan={plan} done={done} onToggle={toggleTask} />
       <SubjectRiskCards subjects={prediction.subjects} plan={plan} weeklyBudget={prediction.profile.dailyHours * 7} />
       <StudySuggestions prediction={prediction} showPlanLink />
-      <Insights prediction={prediction} stats={stats} streak={streak} />
       <Charts prediction={prediction} />
       <QuickActions />
     </div>
