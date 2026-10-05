@@ -1,3 +1,4 @@
+import { priorityReason } from '../../utils/helpers';
 import { RISK_PILL, RANK_RING } from './risk';
 
 function hoursFor(name, plan) {
@@ -48,6 +49,7 @@ export default function SubjectRiskCards({ subjects, plan, weeklyBudget }) {
                   <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${RISK_PILL[subject.risk] || RISK_PILL.Medium}`}>{subject.risk} risk</span>
                 </div>
                 <h4 className="mt-3 text-sm font-black leading-snug text-slate-900 dark:text-white">{subject.name}</h4>
+                <p className="mt-1 text-[11px] text-slate-500">{priorityReason(subject)}</p>
                 <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2.5 text-xs dark:border-slate-800 dark:bg-slate-800/60">
                   <div>
                     <span className="block text-[10px] font-bold uppercase text-slate-400">Now</span>

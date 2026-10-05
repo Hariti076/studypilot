@@ -102,6 +102,66 @@ export function planToIcs(plan) {
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//StudyPilot//Weekly Plan//EN', ...events, 'END:VCALENDAR'].join('\r\n');
 }
 
+/** After two finished sessions in a subject, the remaining blocks get a slightly longer stretch task. */
+export function applyStretch(plan, done) {
+  if (!plan?.length) return null;
+  const counts = {};
+  for (const item of plan) {
+    if (item.type === 'study' && done[item.id]) counts[item.subject] = (counts[item.subject] || 0) + 1;
+  }
+  let changed = false;
+  const next = plan.map((item) => {
+    if (item.type !== 'study') return item;
+    const ready = (counts[item.subject] || 0) >= 2 && !done[item.id];
+    if (ready && !item.stretched) {
+      changed = true;
+      const base = item.baseMinutes ?? item.minutes;
+      const minutes = Math.min(120, base + 10);
+      return {
+        ...item,
+        baseMinutes: base,
+        minutes,
+        duration: formatDuration(minutes),
+        stretched: true,
+        task: item.task.startsWith('Stretch — ') ? item.task : `Stretch — ${item.task}`,
+      };
+    }
+    if (!ready && item.stretched) {
+      changed = true;
+      const minutes = item.baseMinutes ?? item.minutes;
+      return {
+        ...item,
+        minutes,
+        duration: formatDuration(minutes),
+        stretched: false,
+        task: item.task.replace(/^Stretch — /, ''),
+      };
+    }
+    return item;
+  });
+  return changed ? next : null;
+}
+
+export function priorityReason(subject) {
+  if (!subject) return '';
+  if (subject.daysLeft <= 10) return 'Exam is close';
+  if ((subject.current ?? 100) < 65) return 'Current mark needs the time';
+  if ((subject.difficulty ?? 0) >= 4) return 'Marked as a hard subject';
+  if (subject.priority === 'Low') return 'Can follow the urgent subjects';
+  return 'Balanced against the rest of the week';
+}
+
+export function guideMessage(prediction, stats, streak) {
+  const focus = [...(prediction?.subjects || [])].sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0))[0];
+  const name = focus?.name || 'the first subject';
+  if (stats?.pct === 100) return { tone: 'up', text: "You're improving. This week's sessions are done." };
+  if (streak >= 3) return { tone: 'up', text: `You're improving. ${streak} days in a row.` };
+  if (stats?.total > 0 && stats.completed === 0) return { tone: 'down', text: `Consistency is quiet. Focus more on ${name}.` };
+  if (prediction?.risk === 'High') return { tone: 'warn', text: `Focus more on ${name}. That subject needs the first block.` };
+  if (stats?.pct >= 50) return { tone: 'up', text: `You're improving. More than half the week is done.` };
+  return { tone: 'info', text: `Focus more on ${name}. It leads the week for a reason.` };
+}
+
 export function missedSessionCount(plan, done, planStart) {
   if (!plan?.length) return 0;
   return plan.filter((item) => isMissed(item, done, planStart)).length;

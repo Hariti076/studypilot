@@ -1,4 +1,4 @@
-const PERSONA_METHODS = {
+export const PERSONA_METHODS = {
   'Consistent Attender': {
     title: 'Add timed practice to a routine that already works',
     steps: [

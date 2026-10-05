@@ -1,14 +1,21 @@
 import { CheckCircle2, Circle, Coffee } from 'lucide-react';
-import { DAYS, todayName } from '../../utils/helpers';
+import { DAYS, priorityReason, todayName } from '../../utils/helpers';
 
 const PRIORITY_PILL = {
-  High: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-500/10 dark:text-rose-200 dark:border-rose-500/30',
-  Medium: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-500/10 dark:text-amber-200 dark:border-amber-500/30',
-  Low: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-200 dark:border-emerald-500/30',
+  High: 'bg-rose-500 text-white border-rose-500',
+  Medium: 'bg-amber-400 text-amber-950 border-amber-400',
+  Low: 'bg-emerald-500 text-white border-emerald-500',
+};
+
+const PRIORITY_EDGE = {
+  High: 'border-l-4 border-l-rose-500',
+  Medium: 'border-l-4 border-l-amber-400',
+  Low: 'border-l-4 border-l-emerald-500',
 };
 
 /** Seven-day list: each focus block is a row you can tick off. */
-export default function PlanGrid({ plan, done, onToggle }) {
+export default function PlanGrid({ plan, done, onToggle, subjects = [] }) {
+  const reasons = Object.fromEntries(subjects.map((subject) => [subject.name, priorityReason(subject)]));
   const today = todayName();
   const study = plan.filter((item) => item.type === 'study');
   const doneMinutes = study.filter((item) => done[item.id]).reduce((sum, item) => sum + item.minutes, 0);
@@ -60,7 +67,7 @@ export default function PlanGrid({ plan, done, onToggle }) {
                       {item.task} · {item.duration}
                     </div>
                   ) : (
-                    <SessionRow key={item.id} item={item} checked={!!done[item.id]} onToggle={() => onToggle(item.id)} />
+                    <SessionRow key={item.id} item={item} reason={reasons[item.subject]} checked={!!done[item.id]} onToggle={() => onToggle(item.id)} />
                   )
                 )}
               </div>
@@ -72,12 +79,12 @@ export default function PlanGrid({ plan, done, onToggle }) {
   );
 }
 
-function SessionRow({ item, checked, onToggle }) {
+function SessionRow({ item, reason, checked, onToggle }) {
   return (
     <div
       className={`flex cursor-pointer flex-col gap-3 rounded-2xl border p-4 transition sm:flex-row sm:items-center sm:justify-between ${
         checked ? 'border-emerald-200 bg-emerald-50/70 dark:border-emerald-500/30 dark:bg-emerald-500/10' : 'border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800/60'
-      }`}
+      } ${PRIORITY_EDGE[item.priority] || PRIORITY_EDGE.Medium}`}
     >
       <button type="button" onClick={onToggle} className="flex min-w-0 flex-1 items-start gap-3 text-left sm:items-center" aria-pressed={checked}>
         {checked ? <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" /> : <Circle className="mt-0.5 h-5 w-5 shrink-0 text-slate-300" />}
@@ -89,9 +96,10 @@ function SessionRow({ item, checked, onToggle }) {
           <span className={`block text-xs font-black text-slate-900 dark:text-white ${checked ? 'text-slate-400 line-through' : ''}`}>
             {item.review && <span className="mr-1.5 rounded-md bg-indigo-100 px-1.5 py-0.5 text-[10px] font-bold text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-200">Review</span>}
             {item.carried && <span className="mr-1.5 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-500/20 dark:text-amber-200">Moved</span>}
+            {item.stretched && <span className="mr-1.5 rounded-md bg-violet-100 px-1.5 py-0.5 text-[10px] font-bold text-violet-800 dark:bg-violet-500/20 dark:text-violet-200">Harder</span>}
             {item.task}
           </span>
-          <span className="mt-0.5 block truncate text-[11px] font-medium text-slate-500">{item.duration}</span>
+          <span className="mt-0.5 block truncate text-[11px] font-medium text-slate-500">{item.duration}{reason ? ` · ${reason}` : ''}</span>
         </span>
       </button>
       <span className="self-end rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-black text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-200 sm:self-auto">
