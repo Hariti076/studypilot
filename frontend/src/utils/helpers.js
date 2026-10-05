@@ -151,15 +151,54 @@ export function priorityReason(subject) {
   return 'Balanced against the rest of the week';
 }
 
+export const PERSONA_SCHEDULE = {
+  'Low Motivation': 'Sessions stay short, about 25–45 minutes, so a low-motivation day still starts.',
+  'Irregular Attender': 'Sessions are shorter and more frequent, with class coming before a long block.',
+  'Tutoring-Supported': 'Sessions leave room to prepare questions and revise the same topic that day.',
+  'Consistent Attender': 'Sessions can run longer, and later blocks turn into harder practice.',
+};
+
+export function focusLine(prediction) {
+  const focus = [...(prediction?.subjects || [])].sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0))[0];
+  if (!focus) return 'Add a subject to see where the week should start.';
+  return `Focus more on ${focus.name}. ${priorityReason(focus)}, and the projected mark is ${focus.predicted}%.`;
+}
+
+/** If the week is underway and little is done, shorten the lighter sessions still ahead. */
+export function easeWhenBehind(plan, done, planStart) {
+  if (!plan?.length || !planStart || plan.some((item) => item.eased)) return null;
+  const study = plan.filter((item) => item.type === 'study');
+  if (!study.length) return null;
+  const doneCount = study.filter((item) => done[item.id]).length;
+  const elapsed = Math.round((new Date(`${todayISO()}T00:00:00`) - new Date(`${planStart}T00:00:00`)) / 86400000);
+  if (elapsed < 2 || doneCount / study.length >= 0.25) return null;
+  let changed = false;
+  const next = plan.map((item) => {
+    if (item.type !== 'study' || done[item.id] || item.priority !== 'Low') return item;
+    changed = true;
+    const base = item.baseMinutes ?? item.minutes;
+    const minutes = Math.max(25, base - 15);
+    return {
+      ...item,
+      baseMinutes: base,
+      minutes,
+      duration: formatDuration(minutes),
+      eased: true,
+      task: item.task.startsWith('Catch-up — ') ? item.task : `Catch-up — ${item.task}`,
+    };
+  });
+  return changed ? next : null;
+}
+
 export function guideMessage(prediction, stats, streak) {
   const focus = [...(prediction?.subjects || [])].sort((a, b) => (b.priorityScore || 0) - (a.priorityScore || 0))[0];
   const name = focus?.name || 'the first subject';
   if (stats?.pct === 100) return { tone: 'up', text: "You're improving. This week's sessions are done." };
   if (streak >= 3) return { tone: 'up', text: `You're improving. ${streak} days in a row.` };
-  if (stats?.total > 0 && stats.completed === 0) return { tone: 'down', text: `Consistency is quiet. Focus more on ${name}.` };
+  if (stats?.total > 0 && stats.pct < 25 && stats.completed === 0) return { tone: 'down', text: `Consistency is dropping. Focus more on ${name}.` };
   if (prediction?.risk === 'High') return { tone: 'warn', text: `Focus more on ${name}. That subject needs the first block.` };
-  if (stats?.pct >= 50) return { tone: 'up', text: `You're improving. More than half the week is done.` };
-  return { tone: 'info', text: `Focus more on ${name}. It leads the week for a reason.` };
+  if (stats?.pct >= 50) return { tone: 'up', text: "You're improving. More than half the week is done." };
+  return { tone: 'info', text: focusLine(prediction) };
 }
 
 export function missedSessionCount(plan, done, planStart) {

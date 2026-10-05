@@ -1,5 +1,5 @@
 import { Compass, Flame, ScanSearch, Sparkles, Target } from 'lucide-react';
-import { priorityReason } from '../../utils/helpers';
+import { focusLine, PERSONA_SCHEDULE, priorityReason } from '../../utils/helpers';
 import { PERSONA_METHODS } from '../../utils/suggestions';
 
 const RISK = {
@@ -8,12 +8,18 @@ const RISK = {
   Low: 'bg-emerald-500 text-white',
 };
 
+function habitPhrase(factor) {
+  if (factor.direction === 'down') return `${factor.label} raised the risk.`;
+  if (factor.direction === 'up') return `${factor.label} is holding the week up.`;
+  return `${factor.label} nudged the risk.`;
+}
+
 function riskBecause(prediction, risk) {
-  const named = (prediction.explanation?.riskFactors || []).map((factor) => factor.label).slice(0, 2);
-  if (named.length) return `${risk} risk, because ${named.join(' and ')} pointed that way.`;
-  const down = (prediction.explanation?.scoreFactors || []).filter((factor) => factor.direction === 'down').map((factor) => factor.label);
-  if (down.length) return `${risk} risk, with ${down.slice(0, 2).join(' and ')} working against the week.`;
-  return `${risk} risk. No single habit is dragging the week down.`;
+  const down = (prediction.explanation?.scoreFactors || []).filter((factor) => factor.direction === 'down');
+  if (down.length) return `${down.slice(0, 2).map(habitPhrase).join(' ')} That is why this week is ${risk} risk.`;
+  const named = (prediction.explanation?.riskFactors || []).slice(0, 2);
+  if (named.length) return `${named.map(habitPhrase).join(' ')} That is why this week is ${risk} risk.`;
+  return `No single habit is dragging the week down, so this stays ${risk} risk.`;
 }
 
 export default function Insights({ prediction, stats, streak }) {
@@ -21,6 +27,8 @@ export default function Insights({ prediction, stats, streak }) {
   const ml = prediction.ml || {};
   const risk = ml.risk_level || prediction.risk || 'Medium';
   const score = ml.predicted_score ?? prediction.summary?.avgPredicted;
+  const range = ml.score_range;
+  const schedule = PERSONA_SCHEDULE[persona.name];
   const method = PERSONA_METHODS[persona.name];
   const tips = method?.steps?.slice(0, 3) || [];
   const helping = (prediction.explanation?.scoreFactors || []).filter((factor) => factor.direction === 'up').slice(0, 3);
@@ -39,8 +47,10 @@ export default function Insights({ prediction, stats, streak }) {
           {persona.name ? <>You are {persona.name}.</> : 'Your week, read as one student.'}
         </h2>
         <p className="relative mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">{riskBecause(prediction, risk)}</p>
-        <div className="relative mt-5 flex flex-wrap gap-3">
-          <Stat label="AI read" value={score == null ? '—' : `${score}%`} />
+        <p className="relative mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">{focusLine(prediction)}</p>
+        {schedule && <p className="relative mt-2 max-w-2xl text-sm leading-relaxed text-amber-100">{schedule}</p>}
+        <div className="relative mt-5 flex flex-wrap items-end gap-3">
+          <Stat label="AI read" value={score == null ? '—' : `${score}%`} hint={range ? `About ${range[0]}–${range[1]}. Not a single certain mark.` : 'A planning estimate, not a certain mark.'} />
           <span className={`inline-flex items-center rounded-full px-4 py-2 text-sm font-black ${RISK[risk] || RISK.Medium}`}>{risk} risk</span>
           {persona.name && <span className="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-semibold">{persona.name}</span>}
         </div>
@@ -55,10 +65,10 @@ export default function Insights({ prediction, stats, streak }) {
       {(helping.length > 0 || against.length > 0) && (
         <div className="flex flex-wrap gap-2 px-5 pb-2">
           {helping.map((factor) => (
-            <span key={factor.label} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-200">Helping · {factor.label}</span>
+            <span key={factor.label} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-200">{habitPhrase(factor)}</span>
           ))}
           {against.map((factor) => (
-            <span key={factor.label} className="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-800 dark:bg-rose-500/15 dark:text-rose-200">Influenced · {factor.label}</span>
+            <span key={factor.label} className="rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-800 dark:bg-rose-500/15 dark:text-rose-200">{habitPhrase(factor)}</span>
           ))}
         </div>
       )}
@@ -92,11 +102,12 @@ export default function Insights({ prediction, stats, streak }) {
   );
 }
 
-function Stat({ label, value }) {
+function Stat({ label, value, hint }) {
   return (
     <div className="rounded-2xl bg-white/10 px-4 py-2">
       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{label}</p>
       <p className="text-2xl font-black">{value}</p>
+      {hint && <p className="mt-0.5 max-w-[14rem] text-[11px] leading-snug text-slate-400">{hint}</p>}
     </div>
   );
 }
